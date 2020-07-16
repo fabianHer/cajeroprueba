@@ -203,7 +203,7 @@ export class OperacionesComponent implements OnInit {
       showCancelButton: true
     }).then(respuesta =>{    
       if(respuesta.value){   
-    this.userCuentas.donar(this.forma.value,this.cuentaUso.idcuenta).subscribe(respuesta =>{
+    this.userCuentas.donar(this.forma.value,this.cuentaUso).subscribe(respuesta =>{
       console.log(respuesta);
       if(respuesta =="HECHO"){
         this.modalRef.hide();
@@ -302,7 +302,7 @@ export class OperacionesComponent implements OnInit {
     console.log(this.forma.value);
     Swal.fire({
       title: 'Esta seguro!!',
-      text: 'Esta seguro que desea realizar la transferencia',
+      text: 'Esta seguro que desea realizar la solicitud de clave',
       icon: 'question',
       showConfirmButton: true,
       showCancelButton: true
@@ -310,7 +310,38 @@ export class OperacionesComponent implements OnInit {
       if(respuesta.value){  
     this.userCuentas.solicitarClave(this.forma.value,this.cedula).subscribe(respuesta =>{
     console.log(respuesta);
-      
+    if(respuesta =='OK'){
+     Swal.fire({
+          icon: 'success',          
+          title: 'Se actualizo corectamente',          
+          showConfirmButton: false,
+          timer: 1500
+        });
+        this.closeModalClave();
+     }else if(respuesta =='MAS DE DOS INTENTOS'){
+      Swal.fire({        
+        title: 'Ya lleva mas de dos intentos, debe intentar mañana',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+        }
+       
+      });
+      this.closeModalClave();
+     }else if(respuesta == 'CLAVE ERRADA'){
+      Swal.fire({
+        icon: 'error',
+        title: 'La clave digitada no existe',
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp'
+        }
+      });
+     }
      })
      }
     });

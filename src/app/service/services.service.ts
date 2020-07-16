@@ -9,6 +9,7 @@ import { map } from 'rxjs/operators';
 export class ServicesService {
 
   url="https://cajero-backend.herokuapp.com/";
+ // url ="http://localhost/cajero/";
 
   constructor(private httpClient: HttpClient) { }
 
@@ -53,7 +54,7 @@ login(usuario: UsuarioModel){
     return this.httpClient.get(`${this.url}traerFunciones.php`)
     .pipe(
       map( (res: any[])=>{
-        return res.map( fundaciones =>({ nombre: fundaciones.nombrebanco,codigo: fundaciones.idbanco })
+        return res.map( fundaciones =>({ nombre: fundaciones.idcuenta+"-"+fundaciones.nombrebanco,codigo: fundaciones.idcuenta })
       )
     })
   );
@@ -72,12 +73,13 @@ login(usuario: UsuarioModel){
 );
 }
  donar(datos: any,cuentauso :any){ 
+   
   const data={
     monto: datos.montoDonacion,
-    idcuenta: datos.fundacion,
-    cuentadonacion: cuentauso   
+    idcuentafundacion: datos.fundacion,
+    cuentadonacion: cuentauso.idcuenta   
   }   
-  console.log(data); 
+  //console.log(data); 
   return this.httpClient.post<any>(`${this.url}donar.php`,JSON.stringify(data));
  }
  transferir(datos: any,cuentauso :any){
