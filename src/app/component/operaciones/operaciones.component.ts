@@ -77,7 +77,9 @@ export class OperacionesComponent implements OnInit {
     this.forma = this.fb.group({ 
     passw1  : ['',  Validators.required],
     passw2  : ['',  Validators.required],    
-    clave  : ['',  Validators.required],    
+    clave   : ['',  Validators.required],    
+  },{
+    validators: this.validador.passwordsIguales('passw1', 'passw2')
   });
    }
   get montoNoValido(){
@@ -289,6 +291,7 @@ export class OperacionesComponent implements OnInit {
   }
   }
   SolicitarClave(){
+    console.log(this.forma.status);
     if(this.forma.invalid){
       return Object.values(this.forma.controls).forEach( respuesta => {
        if( respuesta instanceof FormGroup ){

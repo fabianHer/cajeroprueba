@@ -19,4 +19,16 @@ multiplo( control: FormControl ): {[s:string]: boolean} {
     }
     return { multiplo: true }
   }
+  passwordsIguales( passw1: string, passw2: string){
+    return ( form: FormGroup) => {
+    const passw1Control = form.controls[passw1];
+    const passw2Control = form.controls[passw2];
+
+    if(passw1Control.value === passw2Control.value){
+      passw2Control.setErrors(null);
+    } else {
+      passw2Control.setErrors({ noEsigual: true});
+    }
+  }
+}
 }

@@ -18,7 +18,12 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 login(forma: NgForm){
- 
+  if(forma.invalid){
+    Object.values(forma.controls).forEach( respuesta => {
+    respuesta.markAsTouched();
+    });
+    return;
+  }else{
   this.userLogin.login(forma.value).subscribe(respuesta =>{
   if(respuesta == 'SIN DATOS'){
     console.log(respuesta);
@@ -33,5 +38,6 @@ login(forma: NgForm){
     this.route.navigate(['/operaciones',respuesta[0].idusuario]);
   }
   });
+}
 }
 }
