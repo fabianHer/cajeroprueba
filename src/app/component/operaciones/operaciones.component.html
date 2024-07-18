@@ -1,0 +1,229 @@
+<div class="jumbotron">
+    <h1 class="display-8">Hello!! {{cedula}}</h1>
+    <p class="lead">Aqui tienes tus cuentas registradas...</p>
+    <div *ngIf="message" class="alert alert-success" role="alert">
+        Ha retirado el monto de {{montoRetirado | currency }}
+    </div>
+    <div *ngIf="message1" class="alert alert-success" role="alert">
+        Ha consignado a su cuenta {{montoConsignado | currency }}
+    </div>
+    <div *ngIf="message2" class="alert alert-success" role="alert">
+        Ha donado {{montoConsignado | currency }}
+    </div>
+    <div *ngIf="message3" class="alert alert-success" role="alert">
+        Ha transferido {{montoConsignado | currency }} {{comentario}}
+    </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" (click)="openModalClave(templateClave)">Solicitar Clave</button>
+    <button type="button" class="btn btn-danger float-right" [routerLink]="['/login']">Cerrar Sesión</button>
+    <hr class="my-8">
+    <table class="table table-responsive table-dark">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Número Cuenta</th>
+                <th scope="col" style="text-align: center;">Monto Actual</th>
+                <th scope="col">Nombre Titular</th>
+                <th scope="col">Nombre Banco</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cuenta of cuentas; let i=index">
+                <th scope="row">{{i + 1}}</th>
+                <td>{{cuenta.idCuenta}}</td>
+                <td data-target="#exampleModal">{{cuenta.monto | currency}}</td>
+                <td>{{cuenta.nombre}}</td>
+                <td>{{cuenta.nombreBanco}}</td>
+                <td><button type="button" class="btn btn-primary" data-toggle="modal" (click)="openModalRetiro(templateRetiro, cuenta)">Retirar</button></td>
+                <td><button type="button" class="btn btn-success" data-toggle="modal" (click)="openModalConsignacion(templateConsignacion, cuenta)">Consignar</button></td>
+                <td><button type="button" class="btn btn-warning" data-toggle="modal" (click)="openModalDonacion(templateDonacion,cuenta)">Donación</button></td>
+                <td><button type="button" class="btn btn-info" data-toggle="modal" (click)="openModalTransferencia(templateTransferencia,cuenta)">Trasnferencia</button></td>
+                <td><button type="button" class="btn btn-danger" (click)=eliminarCuenta(cuenta)>Eliminar Cuenta</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="lead">Estas son tus donaciones.</p>
+    <hr class="my-4">
+    <table class="table table-responsive table-dark">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Número Cuenta</th>
+                <th scope="col" style="text-align: center;">Monto Actual</th>
+                <th scope="col">Nombre Banco</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cuentaF of cuentasF; let i=index">
+                <th scope="row">{{i + 1 }}</th>
+                <td>{{cuentaF.idCuenta}}</td>
+                <td data-target="#exampleModal">{{cuentaF.monto | currency}}</td>
+                <td>{{cuentaF.nombreBanco}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<ng-template #templateRetiro>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Retiro!!</h5>
+        <button type="button" class="close pull-right" arial-label="Close" (click)="closeRetiro()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="forma" (ngSubmit)="retirarMonto()">
+            <div class="form-group">
+                <label>Digite Monto</label>
+                <input type="text" class="form-control" placeholder="Monto a Retirar" formControlName="monto" [class.is-invalid]="montoNoValido">
+                <small *ngIf="montoNoValido" class="text-danger">
+                    Ingrese valor a retirar, Multiplos de 5
+                   </small>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary w-25">
+                <i class="fa fa-save"></i>
+                Retirar
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<ng-template #templateConsignacion>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Consignación!!</h5>
+        <button type="button" class="close pull-right" arial-label="Close" (click)="closeConsignacion()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="forma" (ngSubmit)="consignar()">
+            <div class="form-group">
+                <label>Digite Monto</label>
+                <input type="text" class="form-control" placeholder="Monto a Consignar" formControlName="montoConsignar" [class.is-invalid]="montoNoValidoConsignar">
+                <small *ngIf="montoNoValidoConsignar" class="text-danger">
+                    Ingrese valor a consignar
+                   </small>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary w-25">
+                <i class="fa fa-save"></i>
+                Consignar
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<ng-template #templateDonacion>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Donación!!</h5>
+        <button type="button" class="close pull-right" arial-label="Close" (click)="closeModalDonacion()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="forma" (ngSubmit)="donar()">
+
+            <div class="form-group">
+                <label>Fundación</label>
+                <select class="form-control" formControlName="fundacion" [class.is-invalid]="noFundacion">
+                    <option *ngFor="let fundacion of fundaciones"
+                     [value]="fundacion.codigo"> {{ fundacion.nombre }}
+                    </option>
+                  </select>
+                <small *ngIf="noFundacion" class="form-text text-danger">Selecione Fundación</small>
+            </div>
+            <div class="form-group">
+                <label>Digite Monto</label>
+                <input type="text" class="form-control" placeholder="Monto a Donar" formControlName="montoDonacion" [class.is-invalid]="montoNoValidoDonacion">
+                <small *ngIf="montoNoValidoDonacion" class="text-danger">Ingrese valor a Donar</small>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary w-25">
+                <i class="fa fa-save"></i>
+                Donar
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<ng-template #templateTransferencia>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Transferencia!!</h5>
+        <button type="button" class="close pull-right" arial-label="Close" (click)="closeModalTransferir()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="forma" (ngSubmit)="transferir()">
+
+            <div class="form-group">
+                <label>Banco a transferir</label>
+                <select class="form-control" formControlName="banco" [class.is-invalid]="noBanco">
+                    <option *ngFor="let banco of bancos"
+                     [value]="banco.codigo"> {{ banco.nombre }}
+                    </option>
+                  </select>
+                <small *ngIf="noBanco" class="form-text text-danger">Seleccione Banco</small>
+            </div>
+            <div class="form-group">
+                <label>Digite Monto</label>
+                <input type="text" class="form-control" placeholder="Monto a Transferir" formControlName="montotransferencia" [class.is-invalid]="noTransferencia">
+                <small *ngIf="noTransferencia" class="text-danger">Ingrese valor a Transferir</small>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary w-25">
+                <i class="fa fa-save"></i>
+                Transferir
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<ng-template #templateClave>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Solicitar Clave!!</h5>
+        <button type="button" class="close pull-right" arial-label="Close" (click)="closeModalClave()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="forma" (ngSubmit)="SolicitarClave()">
+            <div class="form-group">
+                <label>Clave Actual</label>
+                <input class="form-control" type="password" name="clave" placeholder="Digite Contraseña" formControlName="clave" [class.is-invalid]="claveNoValida">
+                <small *ngIf="claveNoValida" class="text-danger">
+                    Digite Clave.
+            </small>
+            </div>
+            <div class="form-group">
+                <label>Clave</label>
+                <input class="form-control" type="password" name="passw1" placeholder="Digite Contraseña" formControlName="passw1" [class.is-invalid]="passw1NoValido">
+                <small *ngIf="passw1NoValido" class="text-danger">
+                    Digite Clave.
+            </small>
+            </div>
+            <div class="form-group">
+                <label>Repetir Clave</label>
+                <input class="form-control" type="password" name="passw2" placeholder="Repita Contraseña" formControlName="passw2" [class.is-invalid]="passw2NoValido">
+                <small *ngIf="passw2NoValido" class="text-danger">
+                Las claves deben ser iguales.
+            </small>
+            </div>
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary w-25">
+                <i class="fa fa-save"></i>
+                Solicitar
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
