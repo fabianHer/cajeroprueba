@@ -2550,7 +2550,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
         //url ="https://cajeroback.netlify.app/";
         //url = "https://vercel.com/yersonrincons-projects/cajero/";
 
-        this.url = "https://cajero-78r69o51h-yersonrincons-projects.vercel.app/";
+        this.url = "https://cajero-theta.vercel.app/api/";
       }
 
       return _createClass(ServicesService, [{

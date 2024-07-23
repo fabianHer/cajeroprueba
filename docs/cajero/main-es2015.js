@@ -1360,7 +1360,7 @@ class ServicesService {
         //url ="http://localhost/cajero/";
         //url ="https://cajeroback.netlify.app/";
         //url = "https://vercel.com/yersonrincons-projects/cajero/";
-        this.url = "https://cajero-78r69o51h-yersonrincons-projects.vercel.app/";
+        this.url = "https://cajero-theta.vercel.app/api/";
     }
     login(usuario) {
         const data = {
